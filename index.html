@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Living - Kost Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Auth Section -->
+    <div id="authSection" class="auth-container">
+        <div class="auth-box">
+            <h1>Happy Living</h1>
+            <p class="subtitle">Boarding House Management System</p>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="form-container">
+                <h2>Login</h2>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button onclick="login()">Login</button>
+                <p class="switch-form">Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="form-container" style="display:none;">
+                <h2>Register</h2>
+                <input type="text" id="registerName" placeholder="Full Name" required>
+                <input type="email" id="registerEmail" placeholder="Email" required>
+                <input type="password" id="registerPassword" placeholder="Password (min 6 characters)" required>
+                <input type="tel" id="registerPhone" placeholder="Phone Number" required>
+                <button onclick="register()">Register</button>
+                <p class="switch-form">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardSection" style="display:none;">
+        <nav class="navbar">
+            <div class="nav-brand">Happy Living</div>
+            <div class="nav-user">
+                <span id="userEmail"></span>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('rooms')">Rooms</button>
+                <button class="tab-btn" onclick="showTab('tenants')">Tenants</button>
+                <button class="tab-btn" onclick="showTab('payments')">Payments</button>
+                <button class="tab-btn" onclick="showTab('maintenance')">Maintenance</button>
+            </div>
+
+            <!-- Rooms Tab -->
+            <div id="roomsTab" class="tab-content">
+                <div class="section-header">
+                    <h2>Room Management</h2>
+                    <button onclick="showAddRoomForm()" class="btn-primary">Add New Room</button>
+                </div>
+
+                <div id="addRoomForm" class="form-card" style="display:none;">
+                    <h3>Add New Room</h3>
+                    <input type="text" id="roomNumber" placeholder="Room Number" required>
+                    <input type="text" id="roomType" placeholder="Room Type (Single/Double/Shared)" required>
+                    <input type="number" id="roomPrice" placeholder="Monthly Price" required>
+                    <select id="roomStatus">
+                        <option value="available">Available</option>
+                        <option value="occupied">Occupied</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                    <button onclick="createRoom()">Save Room</button>
+                    <button onclick="hideAddRoomForm()" class="btn-secondary">Cancel</button>
+                </div>
+
+                <div id="editRoomForm" class="form-card" style="display:none;">
+                    <h3>Edit Room</h3>
+                    <input type="hidden" id="editRoomId">
+                    <input type="text" id="editRoomNumber" placeholder="Room Number" required>
+                    <input type="text" id="editRoomType" placeholder="Room Type" required>
+                    <input type="number" id="editRoomPrice" placeholder="Monthly Price" required>
+                    <select id="editRoomStatus">
+                        <option value="available">Available</option>
+                        <option value="occupied">Occupied</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                    <button onclick="updateRoom()">Update Room</button>
+                    <button onclick="hideEditRoomForm()" class="btn-secondary">Cancel</button>
+                </div>
+
+                <div id="roomsList" class="data-grid"></div>
+            </div>
+
+            <!-- Tenants Tab -->
+            <div id="tenantsTab" class="tab-content" style="display:none;">
+                <div class="section-header">
+                    <h2>Tenant Management</h2>
+                    <button onclick="showAddTenantForm()" class="btn-primary">Add New Tenant</button>
+                </div>
+
+                <div id="addTenantForm" class="form-card" style="display:none;">
+                    <h3>Add New Tenant</h3>
+                    <input type="text" id="tenantName" placeholder="Full Name" required>
+                    <input type="email" id="tenantEmail" placeholder="Email" required>
+                    <input type="tel" id="tenantPhone" placeholder="Phone Number" required>
+                    <input type="text" id="tenantID" placeholder="ID Card Number" required>
+                    <input type="date" id="tenantMoveIn" placeholder="Move-in Date" required>
+                    <button onclick="createTenant()">Save Tenant</button>
+                    <button onclick="hideAddTenantForm()" class="btn-secondary">Cancel</button>
+                </div>
+
+                <div id="editTenantForm" class="form-card" style="display:none;">
+                    <h3>Edit Tenant</h3>
+                    <input type="hidden" id="editTenantKey">
+                    <input type="text" id="editTenantName" placeholder="Full Name" required>
+                    <input type="email" id="editTenantEmail" placeholder="Email" required>
+                    <input type="tel" id="editTenantPhone" placeholder="Phone Number" required>
+                    <input type="text" id="editTenantID" placeholder="ID Card Number" required>
+                    <input type="date" id="editTenantMoveIn" placeholder="Move-in Date" required>
+                    <button onclick="updateTenant()">Update Tenant</button>
+                    <button onclick="hideEditTenantForm()" class="btn-secondary">Cancel</button>
+                </div>
+
+                <div id="tenantsList" class="data-grid"></div>
+            </div>
+
+            <!-- Payments Tab -->
+            <div id="paymentsTab" class="tab-content" style="display:none;">
+                <div class="section-header">
+                    <h2>Payment Records</h2>
+                    <button onclick="showAddPaymentForm()" class="btn-primary">Add Payment</button>
+                </div>
+
+                <div id="addPaymentForm" class="form-card" style="display:none;">
+                    <h3>Add Payment Record</h3>
+                    <input type="text" id="paymentTenant" placeholder="Tenant Name" required>
+                    <input type="text" id="paymentRoom" placeholder="Room Number" required>
+                    <input type="number" id="paymentAmount" placeholder="Amount" required>
+                    <input type="date" id="paymentDate" required>
+                    <select id="paymentStatus">
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
+                    <button onclick="createPayment()">Save Payment</button>
+                    <button onclick="hideAddPaymentForm()" class="btn-secondary">Cancel</button>
+                </div>
+
+                <div id="editPaymentForm" class="form-card" style="display:none;">
+                    <h3>Edit Payment</h3>
+                    <input type="hidden" id="editPaymentKey">
+                    <input type="text" id="editPaymentTenant" placeholder="Tenant Name" required>
+                    <input type="text" id="editPaymentRoom" placeholder="Room Number" required>
+                    <input type="number" id="editPaymentAmount" placeholder="Amount" required>
+                    <input type="date" id="editPaymentDate" required>
+                    <select id="editPaymentStatus">
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
+                    <button onclick="updatePayment()">Update Payment</button>
+                    <button onclick="hideEditPaymentForm()" class="btn-secondary">Cancel</button>
+                </div>
+
+                <div id="paymentsList" class="data-grid"></div>
+            </div>
+
+            <!-- Maintenance Tab -->
+            <div id="maintenanceTab" class="tab-content" style="display:none;">
+                <div class="section-header">
+                    <h2>Maintenance Requests</h2>
+                    <button onclick="showAddMaintenanceForm()" class="btn-primary">Add Request</button>
+                </div>
+
+                <div id="addMaintenanceForm" class="form-card" style="display:none;">
+                    <h3>Add Maintenance Request</h3>
+                    <input type="text" id="maintenanceRoom" placeholder="Room Number" required>
+                    <input type="text" id="maintenanceIssue" placeholder="Issue Description" required>
+                    <select id="maintenancePriority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                    <select id="maintenanceStatus">
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <button onclick="createMaintenance()">Save Request</button>
+                    <button onclick="hideAddMaintenanceForm()" class="btn-secondary">Cancel</button>
+                </div>
+
+                <div id="editMaintenanceForm" class="form-card" style="display:none;">
+                    <h3>Edit Maintenance Request</h3>
+                    <input type="hidden" id="editMaintenanceKey">
+                    <input type="text" id="editMaintenanceRoom" placeholder="Room Number" required>
+                    <input type="text" id="editMaintenanceIssue" placeholder="Issue Description" required>
+                    <select id="editMaintenancePriority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                    <select id="editMaintenanceStatus">
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <button onclick="updateMaintenance()">Update Request</button>
+                    <button onclick="hideEditMaintenanceForm()" class="btn-secondary">Cancel</button>
+                </div>
+
+                <div id="maintenanceList" class="data-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/rooms.js"></script>
+    <script type="module" src="js/tenants.js"></script>
+    <script type="module" src="js/payments.js"></script>
+    <script type="module" src="js/maintenance.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
